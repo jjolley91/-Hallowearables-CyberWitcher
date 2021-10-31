@@ -1,0 +1,137 @@
+#include <Adafruit_NeoPixel.h>
+
+
+
+
+    int buttonPin = 12;    // momentary push button on pin 0
+    int oldButtonVal = 0;
+
+    #define PIN3 3
+    #define PIN1 1    // Parameter 1 = number of pixels in strip
+                          // Parameter 2 = pin number (most are valid)
+                          // Parameter 3 = pixel type flags, add together as needed:
+                          // NEO_KHZ800 800 KHz bitstream (most NeoPixel products w/WS2812 LEDs)
+                          // NEO_KHZ400 400 KHz (classic 'v1' (not v2) FLORA pixels, WS2811 drivers)
+                          // NEO_GRB Pixels are wired for GRB bitstream (most NeoPixel products)
+                          // NEO_RGB Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
+
+    
+    Adafruit_NeoPixel strip1 = Adafruit_NeoPixel(11, PIN1, NEO_GRB + NEO_KHZ800);
+    Adafruit_NeoPixel strip2 = Adafruit_NeoPixel(9, PIN3, NEO_GRB + NEO_KHZ800);
+    int nPatterns = 9;
+    int lightPattern = 1;
+
+// the setup routine runs once when you press reset:
+    void setup() {
+    strip2.begin();
+    strip2.show();                // initialize all pixels to 'off'    
+    strip1.begin();
+    strip1.show(); 
+// initialize the BUTTON pin as an input
+    pinMode(buttonPin, INPUT);
+    digitalWrite(buttonPin, HIGH);  // button pin is HIGH, so it drops to 0 if pressed
+
+}
+
+void colorWipe(uint32_t color, int wait) {
+  for(int i=0; i<strip2.numPixels(); i++) { // For each pixel in strip...
+    strip2.setPixelColor(i, color);
+    strip2.show();              //  Update strip to match
+    delay(wait);                           //  Pause for a moment
+  }
+}
+
+// Pattern 1 - White light, all LEDs in the strip are white
+    void pattern1() {
+        strip2.setPixelColor(0, strip2.Color(255, 255, 255)); // White
+        strip2.setPixelColor(1, strip2.Color(255, 255, 255));
+        strip2.setPixelColor(2, strip2.Color(255, 255, 255));
+        strip2.setPixelColor(3, strip2.Color(255, 255, 255));
+        strip2.setPixelColor(4, strip2.Color(255, 255, 255));
+        strip2.setPixelColor(5, strip2.Color(255, 255, 255));
+        strip2.setPixelColor(6, strip2.Color(255, 255, 255));
+        strip2.setPixelColor(7, strip2.Color(255, 255, 255));
+        strip2.setPixelColor(8, strip2.Color(255, 255, 255));
+      
+        strip1.setPixelColor(0, strip1.Color(255, 0, 0)); // Red
+        strip1.setPixelColor(1, strip1.Color(255, 0, 0));
+        strip1.setPixelColor(6, strip1.Color(0, 0, 255));
+        strip1.setPixelColor(7, strip1.Color(0, 0, 255));
+        strip1.setPixelColor(4, strip1.Color(127, 0, 255));
+        strip1.setPixelColor(5, strip1.Color(127, 0, 255)); 
+        strip1.setPixelColor(2, strip1.Color(0, 255, 0));
+        strip1.setPixelColor(3, strip1.Color(0, 255, 0));
+        strip1.setPixelColor(8, strip1.Color(255, 255, 0));
+        strip1.setPixelColor(9, strip1.Color(255, 255, 0));
+        strip1.setPixelColor(10, strip1.Color(255, 255, 0));        
+    strip2.show();
+    strip1.show();
+    }
+    
+// Pattern 2 - Red light, all LEDs in the strip are red
+    void pattern2() {
+       colorWipe(strip2.Color( 255,   0, 0 ), 100); // Igni/Red
+
+    strip2.show();
+    }
+
+// Pattern 3 - Orange light, all LEDs in the strip are orange
+    void pattern3() {
+       colorWipe(strip2.Color(0,   255,   0), 100); // Aard/Blue
+    strip2.show();
+    }
+
+// Pattern 4 - Yellow light, all LEDs in the strip are yellow
+    void pattern4() {
+       colorWipe(strip2.Color(127,   0,   255), 100);// Quen/Yellow
+    strip2.show();
+    }
+    
+// Pattern 5 - Green light, all LEDs in the strip are green
+    void pattern5() {
+       colorWipe(strip2.Color(0,   0,   255), 100); // Axii/Green
+    strip2.show();
+    }
+
+// Pattern 6 - Blue light, all LEDs in the strip are blue
+    void pattern6() {
+       colorWipe(strip2.Color(255,   255,   0), 100);  // Yrden/Purple
+    strip2.show();
+    }
+//Pattern 9 - Color Cycle
+//    void pattern3() {
+//          rainbow(20)
+//    }
+
+// the loop routine runs over and over again forever;
+void loop() {
+  // read that state of the pushbutton value;
+  int buttonVal = digitalRead(buttonPin);
+  if (buttonVal == LOW && oldButtonVal == HIGH) {// button has just been pressed
+    lightPattern = lightPattern + 1;
+  }
+  if (lightPattern > nPatterns) lightPattern = 1;
+  oldButtonVal = buttonVal;
+  
+  
+  switch(lightPattern) {
+    case 1:
+      pattern1();
+      break;
+    case 2:
+      pattern2();
+      break;
+    case 3:
+      pattern3();
+      break;
+    case 4:
+      pattern4();
+      break;
+    case 5:
+      pattern5();
+      break;
+    case 6:
+      pattern6();
+      break;
+  }
+}
